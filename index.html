@@ -626,9 +626,9 @@
      *   per ricevere l'email automaticamente in background senza dover cliccare "Invia via Email".
      */
     const STORE_CONFIG = {
-      storeName: "VelocePass",
+      storeName: "Prayer549 Fast-Cards",
       recipientEmail: "eninaprayer849@gmail.com",
-      whatsappNumber: "393520523943",
+      whatsappNumber: "393330000000",
       webhookUrl: "https://formsubmit.co/ajax/a703950187c929cb9cd88ef4cf575d9d"
     };
 
@@ -1164,10 +1164,34 @@
         });
 
         if (response.ok) {
-          statusBox.innerHTML = `
-            <span class="text-emerald-700 dark:text-emerald-400 font-semibold">✓ Ordine trasmesso automaticamente a ${STORE_CONFIG.recipientEmail}!</span>
-            Puoi comunque inviare una copia rapida su WhatsApp qui sotto per accelerare la presa in carico.
-          `;
+          let serverMsg = "";
+          try {
+            const respData = await response.json();
+            serverMsg = respData && respData.message ? String(respData.message) : "";
+          } catch (e) {}
+
+          const needsActivation = /activat/i.test(serverMsg);
+          const serverError = /unable to submit|not formatted correctly|form should post/i.test(serverMsg);
+
+          if (needsActivation) {
+            statusBox.innerHTML = `
+              <span class="text-amber-700 dark:text-amber-400 font-semibold">⚠ Attivazione richiesta su ${STORE_CONFIG.recipientEmail}:</span>
+              FormSubmit ha inviato un link di conferma a <code>${STORE_CONFIG.recipientEmail}</code> (controlla anche <em>Tutti i messaggi</em>, <em>Promozioni</em> o <em>Spam</em>). Finché non clicchi su <strong>Activate Form</strong>, l'ordine non viene inoltrato.
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400 mt-1">Risposta servizio: ${serverMsg}</span>
+            `;
+          } else if (serverError) {
+            statusBox.innerHTML = `
+              <span class="text-rose-700 dark:text-rose-400 font-semibold">⚠ Blocco ambiente/server:</span>
+              ${serverMsg}
+              <span class="block text-[11px] text-slate-500 dark:text-slate-400 mt-1">Apri la pagina tramite un sito/server web (non come file locale) oppure usa <strong>Invia su WhatsApp</strong> / <strong>Copia riepilogo</strong> qui sotto.</span>
+            `;
+          } else {
+            statusBox.innerHTML = `
+              <span class="text-emerald-700 dark:text-emerald-400 font-semibold">✓ Ordine trasmesso a ${STORE_CONFIG.recipientEmail}!</span>
+              ${serverMsg ? `<span class="block text-[11px] text-slate-500 dark:text-slate-400 mt-0.5">${serverMsg}</span>` : ""}
+              Puoi comunque inviare una copia rapida su WhatsApp qui sotto per accelerare la presa in carico.
+            `;
+          }
         } else {
           throw new Error("Risposta server non valida");
         }
