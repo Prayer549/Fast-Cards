@@ -1,0 +1,1413 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>VelocePass — Servizi & Ricariche Digitali</title>
+  <!-- Caricamento Tailwind CSS per un design pulito, moderno e responsive -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Font Inter per massima leggibilità -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#fff7ed',
+              100: '#ffedd5',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c',
+            }
+          }
+        }
+      }
+    };
+  </script>
+  <style>
+    /* Stili minimi di supporto per transizioni fluide, effetto Liquid Glass e tema chiaro/scuro */
+    html {
+      scroll-behavior: smooth;
+    }
+    body {
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      background-color: #fafaf9;
+      background-image:
+        radial-gradient(at 12% 8%, rgba(249, 115, 22, 0.14) 0px, transparent 48%),
+        radial-gradient(at 88% 14%, rgba(16, 185, 129, 0.13) 0px, transparent 46%),
+        radial-gradient(at 50% 92%, rgba(251, 146, 60, 0.10) 0px, transparent 52%);
+      color: #0f172a;
+      transition: background-color 0.2s ease, color 0.2s ease;
+    }
+    html.dark body {
+      background-color: #0b1120;
+      background-image:
+        radial-gradient(at 14% 10%, rgba(249, 115, 22, 0.18) 0px, transparent 48%),
+        radial-gradient(at 86% 16%, rgba(16, 185, 129, 0.14) 0px, transparent 46%),
+        radial-gradient(at 52% 90%, rgba(56, 189, 248, 0.08) 0px, transparent 50%);
+      color: #f8fafc;
+    }
+
+    /* Effetto Liquid Glass su superfici principali, header e pannelli */
+    .liquid-glass {
+      background: rgba(255, 255, 255, 0.72) !important;
+      backdrop-filter: blur(20px) saturate(165%);
+      -webkit-backdrop-filter: blur(20px) saturate(165%);
+      border-color: rgba(255, 255, 255, 0.78) !important;
+      box-shadow:
+        0 10px 30px -10px rgba(15, 23, 42, 0.08),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
+    }
+    html.dark .liquid-glass {
+      background: rgba(15, 23, 42, 0.68) !important;
+      backdrop-filter: blur(22px) saturate(165%);
+      -webkit-backdrop-filter: blur(22px) saturate(165%);
+      border-color: rgba(255, 255, 255, 0.14) !important;
+      box-shadow:
+        0 14px 34px -12px rgba(0, 0, 0, 0.55),
+        inset 0 1px 0 0 rgba(255, 255, 255, 0.14);
+    }
+
+    .liquid-glass-subtle {
+      background: rgba(255, 255, 255, 0.56) !important;
+      backdrop-filter: blur(14px) saturate(150%);
+      -webkit-backdrop-filter: blur(14px) saturate(150%);
+      border-color: rgba(255, 255, 255, 0.65) !important;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.75);
+    }
+    html.dark .liquid-glass-subtle {
+      background: rgba(30, 41, 59, 0.52) !important;
+      backdrop-filter: blur(14px) saturate(150%);
+      -webkit-backdrop-filter: blur(14px) saturate(150%);
+      border-color: rgba(255, 255, 255, 0.11) !important;
+      box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.09);
+    }
+  </style>
+  <script>
+    // Applica subito il tema salvato o la preferenza di sistema prima del primo render
+    (function () {
+      try {
+        var savedTheme = localStorage.getItem('velopass_theme');
+        var prefersDark = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
+        if (savedTheme === 'dark' || (!savedTheme && prefersDark)) {
+          document.documentElement.classList.add('dark');
+        }
+      } catch (e) {}
+    })();
+  </script>
+</head>
+<body class="min-h-screen flex flex-col antialiased bg-[#fafaf9] text-[#0f172a] dark:bg-[#0b1120] dark:text-slate-100 selection:bg-orange-100 selection:text-orange-900 dark:selection:bg-orange-500/30 dark:selection:text-orange-200">
+
+  <!-- Barra superiore rassicurante ad alta fiducia -->
+  <div class="bg-[#0f172a] dark:bg-slate-950 text-white text-[11px] sm:text-xs py-2 px-4 border-b border-slate-800">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-center sm:justify-between gap-x-6 gap-y-1 text-center">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+        <span class="font-medium">Attivazione rapida in 1–20 min</span>
+      </div>
+      <div class="hidden sm:flex items-center gap-5 text-slate-300">
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-emerald-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+          </svg>
+          Nessuna password richiesta nel modulo
+        </span>
+        <span class="flex items-center gap-1.5">
+          <svg class="w-3.5 h-3.5 text-orange-400" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+          </svg>
+          Supporto diretto WhatsApp & Email
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header & Barra di Fiducia -->
+  <header class="sticky top-0 z-30 liquid-glass border-b border-stone-200/90 dark:border-slate-800 shadow-xs">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-3 sm:gap-4">
+      <!-- Logo & Nome Store -->
+      <a href="#" class="flex items-center gap-2.5 group min-w-0">
+        <div class="w-9 h-9 rounded-xl bg-[#0f172a] dark:bg-slate-800 text-white flex items-center justify-center shadow-sm group-hover:bg-[#f97316] transition-colors shrink-0">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+          </svg>
+        </div>
+        <div class="min-w-0">
+          <span id="store-name-header" class="font-bold text-[#0f172a] dark:text-white tracking-tight text-base sm:text-lg block leading-none truncate">VelocePass</span>
+          <span class="text-[11px] text-emerald-700 dark:text-emerald-400 font-semibold truncate block">Risparmio verificato • Ordine diretto</span>
+        </div>
+      </a>
+
+      <!-- Navigazione rapida, Toggle Tema Dark & Pulsante Carrello -->
+      <div class="flex items-center gap-2 sm:gap-4 shrink-0">
+        <nav class="hidden md:flex items-center gap-5 text-sm font-medium text-slate-600 dark:text-slate-300">
+          <a href="#offerte-evidenza" class="hover:text-[#ea580c] dark:hover:text-orange-400 transition-colors">Offerte Top</a>
+          <a href="#catalogo" class="hover:text-[#ea580c] dark:hover:text-orange-400 transition-colors">Catalogo</a>
+          <a href="#come-funziona" class="hover:text-[#ea580c] dark:hover:text-orange-400 transition-colors">Come funziona</a>
+          <a href="#faq" class="hover:text-[#ea580c] dark:hover:text-orange-400 transition-colors">FAQ</a>
+        </nav>
+
+        <!-- Pulsante Tema Chiaro / Dark -->
+        <button type="button" id="theme-toggle-btn" aria-label="Attiva o disattiva tema dark"
+          class="p-2 sm:px-3 sm:py-2 rounded-xl bg-stone-100 hover:bg-stone-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-slate-700 dark:text-amber-300 border border-stone-200 dark:border-slate-700 text-xs font-bold transition-colors flex items-center gap-1.5 cursor-pointer">
+          <!-- Icona Luna (visibile in tema chiaro) -->
+          <svg id="theme-icon-moon" class="w-4 h-4 text-slate-700" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M21.752 15.002A9.718 9.718 0 0118 15.75c-5.385 0-9.75-4.365-9.75-9.75 0-1.33.266-2.597.748-3.752A9.753 9.753 0 003 11.25C3 16.635 7.365 21 12.75 21a9.753 9.753 0 009.002-5.998z" />
+          </svg>
+          <!-- Icona Sole (visibile in tema dark) -->
+          <svg id="theme-icon-sun" class="w-4 h-4 text-amber-300 hidden" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 3v2.25m6.364.386l-1.591 1.591M21 12h-2.25m-.386 6.364l-1.591-1.591M12 18.75V21m-4.773-4.227l-1.591 1.591M5.25 12H3m4.227-4.773L5.636 5.636M15.75 12a3.75 3.75 0 11-7.5 0 3.75 3.75 0 017.5 0z" />
+          </svg>
+          <span id="theme-toggle-label" class="hidden sm:inline">Dark</span>
+        </button>
+
+        <a href="#riepilogo-ordine" class="inline-flex items-center gap-2 px-3.5 sm:px-4 py-2 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white text-xs sm:text-sm font-semibold transition-all shadow-sm hover:shadow">
+          <svg class="w-4 h-4 text-orange-100" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007z" />
+          </svg>
+          <span>Il tuo Ordine</span>
+          <span id="header-cart-count" class="px-1.5 py-0.5 text-xs font-bold rounded-md bg-white text-[#ea580c]">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section: Luminosa, affidabile e orientata al risparmio concreto -->
+  <section class="liquid-glass border-b border-stone-200/80 dark:border-slate-800">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-12">
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+        <div class="lg:col-span-7">
+          <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200 dark:border-emerald-800 text-xs font-semibold text-[#059669] dark:text-emerald-400 mb-4">
+            <span class="w-2 h-2 rounded-full bg-[#10b981]"></span>
+            <span>Risparmia fino al 68% rispetto ai listini ufficiali</span>
+          </div>
+          <h1 class="text-2xl sm:text-4xl font-extrabold text-[#0f172a] dark:text-white tracking-tight leading-tight">
+            Abbonamenti, ricariche e chiavi digitali a prezzi trasparenti.
+          </h1>
+          <p class="mt-3 text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+            Scegli il taglio o la durata che preferisci, aggiungi al riepilogo e invia la richiesta in 30 secondi. <strong class="text-[#0f172a] dark:text-white font-semibold">Nessun addebito automatico sul sito</strong>: ricevi conferma e istruzioni chiare prima di pagare.
+          </p>
+
+          <div class="mt-6 flex flex-wrap items-center gap-3">
+            <a href="#catalogo" class="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white text-sm font-bold shadow-sm hover:shadow transition-all">
+              <span>Esplora tutte le offerte</span>
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+              </svg>
+            </a>
+            <a href="#come-funziona" class="inline-flex items-center justify-center px-4 py-3 rounded-xl liquid-glass-subtle hover:bg-stone-200/80 dark:hover:bg-slate-700 text-[#0f172a] dark:text-slate-100 text-sm font-semibold transition-colors">
+              Come funziona l'attivazione
+            </a>
+          </div>
+        </div>
+
+        <!-- 3 Pilastri di fiducia e convenienza -->
+        <div class="lg:col-span-5 grid grid-cols-1 gap-3">
+          <div class="flex items-center gap-3 p-3.5 rounded-2xl liquid-glass-subtle border border-stone-200/90 dark:border-slate-700/80">
+            <div class="w-9 h-9 rounded-xl bg-emerald-100/80 dark:bg-emerald-950 text-[#059669] dark:text-emerald-400 flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-[#0f172a] dark:text-white">Prezzi scontati e trasparenti</p>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Confronto chiaro con il listino ufficiale su ogni taglio</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 p-3.5 rounded-2xl liquid-glass-subtle border border-stone-200/90 dark:border-slate-700/80">
+            <div class="w-9 h-9 rounded-xl bg-orange-100/80 dark:bg-orange-950/70 text-[#ea580c] dark:text-orange-400 flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+              </svg>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-[#0f172a] dark:text-white">Evasione rapida 1–20 minuti</p>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Gestione immediata in fascia diurna con supporto diretto</p>
+            </div>
+          </div>
+
+          <div class="flex items-center gap-3 p-3.5 rounded-2xl liquid-glass-subtle border border-stone-200/90 dark:border-slate-700/80">
+            <div class="w-9 h-9 rounded-xl bg-emerald-100/80 dark:bg-emerald-950 text-[#059669] dark:text-emerald-400 flex items-center justify-center shrink-0">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+              </svg>
+            </div>
+            <div>
+              <p class="text-xs font-bold text-[#0f172a] dark:text-white">Zero addebiti automatici</p>
+              <p class="text-[11px] text-slate-500 dark:text-slate-400">Paghi solo dopo aver ricevuto conferma dell'ordine</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Sezione Offerte in Evidenza (Combo & Piano 3 Mesi) -->
+  <section id="offerte-evidenza" class="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 pt-8">
+    <div class="flex items-center justify-between mb-4">
+      <div class="flex items-center gap-2">
+        <span class="px-2.5 py-0.5 rounded-md bg-orange-100 dark:bg-orange-950/80 text-[#ea580c] dark:text-orange-400 text-xs font-bold uppercase tracking-wider">In Evidenza</span>
+        <h2 class="text-lg font-bold text-[#0f172a] dark:text-white">Le 2 offerte più convenienti del momento</h2>
+      </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <!-- Spotlight 1: Combo Spotify + Netflix -->
+      <div class="liquid-glass rounded-2xl border-2 border-orange-200 dark:border-orange-500/40 p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4 relative overflow-hidden">
+        <div class="space-y-1.5">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full bg-[#f97316] text-white text-[11px] font-bold">Più scelto</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/80 text-[#059669] dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-[11px] font-bold">Risparmi €6,99 (-41%)</span>
+          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-[#0f172a] dark:text-white">Combo Spotify Premium + Netflix 4K (1 Mese)</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+            Entrambi i servizi attivi per 30 giorni: musica senza pubblicità + Netflix 4K UHD (account privato con email originale).
+          </p>
+        </div>
+
+        <div class="flex sm:flex-col items-center sm:items-end justify-between gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-stone-100 dark:border-slate-800">
+          <div class="text-left sm:text-right">
+            <span class="text-xs text-slate-400 line-through block">€16,98</span>
+            <span class="text-2xl font-extrabold text-[#059669] dark:text-emerald-400">€9,99</span>
+          </div>
+          <button type="button" onclick="quickAddOption('combo-spotify-netflix', 'cb-1m')"
+            class="px-4 py-2.5 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-bold shadow-sm transition-all whitespace-nowrap cursor-pointer">
+            + Aggiungi Combo
+          </button>
+        </div>
+      </div>
+
+      <!-- Spotlight 2: Spotify 3 Mesi -->
+      <div class="liquid-glass rounded-2xl border-2 border-emerald-200/90 dark:border-emerald-500/35 p-5 shadow-sm flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        <div class="space-y-1.5">
+          <div class="flex flex-wrap items-center gap-2">
+            <span class="px-2.5 py-0.5 rounded-full bg-[#0f172a] dark:bg-slate-800 text-white text-[11px] font-bold border border-transparent dark:border-slate-700">Miglior rapporto qualità/prezzo</span>
+            <span class="px-2.5 py-0.5 rounded-full bg-emerald-50 dark:bg-emerald-950/80 text-[#059669] dark:text-emerald-400 border border-emerald-200 dark:border-emerald-800 text-[11px] font-bold">Risparmi €23,98 (-62%)</span>
+          </div>
+          <h3 class="text-base sm:text-lg font-extrabold text-[#0f172a] dark:text-white">Spotify Premium — Pacchetto 3 Mesi</h3>
+          <p class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+            Paghi l'equivalente di <strong class="text-[#0f172a] dark:text-white">€5,00/mese</strong> invece di €12,99 ufficiali. Un solo rinnovo per tutto il trimestre senza pensieri.
+          </p>
+        </div>
+
+        <div class="flex sm:flex-col items-center sm:items-end justify-between gap-2 shrink-0 pt-2 sm:pt-0 border-t sm:border-t-0 border-stone-100 dark:border-slate-800">
+          <div class="text-left sm:text-right">
+            <span class="text-xs text-slate-400 line-through block">€38,97</span>
+            <span class="text-2xl font-extrabold text-[#059669] dark:text-emerald-400">€14,99</span>
+          </div>
+          <button type="button" onclick="quickAddOption('spotify-premium', 'sp-3m')"
+            class="px-4 py-2.5 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-bold shadow-sm transition-all whitespace-nowrap cursor-pointer">
+            + Aggiungi 3 Mesi
+          </button>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Content: Catalogo a Sinistra + Riepilogo Ordine & Form a Destra -->
+  <main id="catalogo" class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8 sm:py-10">
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
+
+      <!-- COLONNA SINISTRA: Filtri & Catalogo Prodotti (7 colonne su desktop) -->
+      <div class="lg:col-span-7 space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div>
+            <h2 class="text-xl font-extrabold text-[#0f172a] dark:text-white">Catalogo Completo</h2>
+            <p class="text-sm text-slate-500 dark:text-slate-400">Seleziona durata o taglio per vedere subito il risparmio.</p>
+          </div>
+
+          <!-- Filtri Categoria -->
+          <div id="category-filters" class="flex flex-wrap gap-1.5" role="tablist" aria-label="Filtra per categoria">
+            <button type="button" data-category="Tutti" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#0f172a] dark:bg-orange-500 text-white transition-colors cursor-pointer">
+              Tutti
+            </button>
+            <button type="button" data-category="Streaming & Combo" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-stone-200 dark:border-slate-700 hover:border-orange-300 hover:text-[#ea580c] dark:hover:text-orange-400 transition-colors cursor-pointer">
+              Streaming & Combo
+            </button>
+            <button type="button" data-category="AI & Utility" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-stone-200 dark:border-slate-700 hover:border-orange-300 hover:text-[#ea580c] dark:hover:text-orange-400 transition-colors cursor-pointer">
+              AI & Utility
+            </button>
+            <button type="button" data-category="Gaming" class="filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-stone-200 dark:border-slate-700 hover:border-orange-300 hover:text-[#ea580c] dark:hover:text-orange-400 transition-colors cursor-pointer">
+              Gaming
+            </button>
+          </div>
+        </div>
+
+        <!-- Griglia Prodotti renderizzata via JavaScript -->
+        <div id="products-grid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <!-- Popolato dinamicamente da renderProducts() -->
+        </div>
+
+        <!-- Sezione Come Funziona (3 step lineari) -->
+        <section id="come-funziona" class="pt-4">
+          <div class="liquid-glass rounded-2xl border border-stone-200/90 dark:border-slate-800 p-5 sm:p-6 shadow-sm">
+            <h3 class="text-base font-extrabold text-[#0f172a] dark:text-white mb-4">Come funziona la richiesta in 3 passaggi</h3>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+              <div class="space-y-1.5">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#f97316] text-white text-xs font-bold">1</span>
+                <p class="text-sm font-bold text-[#0f172a] dark:text-white">Scegli i prodotti</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Seleziona durate o tagli dal catalogo e controlla il totale scontato.</p>
+              </div>
+              <div class="space-y-1.5">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#f97316] text-white text-xs font-bold">2</span>
+                <p class="text-sm font-bold text-[#0f172a] dark:text-white">Invia la richiesta</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Compila i tuoi recapiti e genera il riepilogo ordine via email o WhatsApp.</p>
+              </div>
+              <div class="space-y-1.5">
+                <span class="inline-flex items-center justify-center w-6 h-6 rounded-full bg-[#059669] text-white text-xs font-bold">3</span>
+                <p class="text-sm font-bold text-[#0f172a] dark:text-white">Conferma e attivazione</p>
+                <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Ricevi i dettagli di pagamento e l'attivazione entro pochi minuti (max 20 min).</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Sezione FAQ Minimale -->
+        <section id="faq" class="pt-2">
+          <div class="liquid-glass rounded-2xl border border-stone-200/90 dark:border-slate-800 p-5 sm:p-6 shadow-sm">
+            <h3 class="text-base font-extrabold text-[#0f172a] dark:text-white mb-3">Domande frequenti</h3>
+            <div class="divide-y divide-stone-100 dark:divide-slate-800">
+              <details class="py-3 group" open>
+                <summary class="flex items-center justify-between cursor-pointer text-sm font-bold text-[#0f172a] dark:text-white list-none">
+                  <span>Come funziona l'attivazione dei servizi?</span>
+                  <svg class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                  </svg>
+                </summary>
+                <p class="mt-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                  Ogni prodotto indica chiaramente la modalità: alcuni prevedono la consegna di un account privato dedicato con email inclusa (es. Netflix 4K), mentre altri vengono attivati sul tuo profilo o tramite riscatto rapido. Riceverai istruzioni precise prima del pagamento.
+                </p>
+              </details>
+
+              <details class="py-3 group">
+                <summary class="flex items-center justify-between cursor-pointer text-sm font-bold text-[#0f172a] dark:text-white list-none">
+                  <span>Quali sono i tempi di consegna?</span>
+                  <svg class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                  </svg>
+                </summary>
+                <p class="mt-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                  In fascia diurna l'evasione richiede generalmente da pochi minuti fino a un massimo di 20 minuti dalla conferma del pagamento. Se l'ordine viene inviato in orario notturno, verrà preso in carico alla prima riapertura mattutina.
+                </p>
+              </details>
+
+              <details class="py-3 group">
+                <summary class="flex items-center justify-between cursor-pointer text-sm font-bold text-[#0f172a] dark:text-white list-none">
+                  <span>Come avviene il pagamento?</span>
+                  <svg class="w-4 h-4 text-slate-400 group-open:rotate-180 transition-transform" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                  </svg>
+                </summary>
+                <p class="mt-2 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                  Questa pagina non preleva denaro automaticamente. Una volta inviata la richiesta d'ordine, ti invieremo il riepilogo e le coordinate per il metodo scelto (PayPal, Revolut/Carta o altro concordato) prima di procedere con l'attivazione.
+                </p>
+              </details>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <!-- COLONNA DESTRA: Riepilogo Ordine + Modulo Richiesta (5 colonne su desktop) -->
+      <div id="riepilogo-ordine" class="lg:col-span-5 lg:sticky lg:top-20 space-y-5">
+        <div class="liquid-glass rounded-2xl border border-stone-200 dark:border-slate-800 shadow-md overflow-hidden">
+          <!-- Intestazione Carrello -->
+          <div class="px-5 py-4 bg-[#0f172a] dark:bg-slate-950 text-white flex items-center justify-between border-b border-transparent dark:border-slate-800">
+            <div class="flex items-center gap-2">
+              <svg class="w-5 h-5 text-[#f97316]" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15c1.012 0 1.867.668 2.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z" />
+              </svg>
+              <h2 class="font-bold text-base">Riepilogo Ordine</h2>
+            </div>
+            <button type="button" id="clear-cart-btn" class="hidden text-xs text-slate-300 hover:text-white underline underline-offset-2 cursor-pointer">
+              Svuota
+            </button>
+          </div>
+
+          <!-- Lista Articoli Selezionati -->
+          <div class="p-5 border-b border-stone-100 dark:border-slate-800">
+            <div id="cart-items-container" class="space-y-3">
+              <!-- Popolato dinamicamente da renderCart() -->
+            </div>
+
+            <!-- Totale Ordine & Risparmio Complessivo -->
+            <div class="mt-4 pt-4 border-t border-stone-200/80 dark:border-slate-800 space-y-2">
+              <div id="cart-savings-row" class="hidden items-center justify-between text-xs font-semibold text-[#059669] dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/70 px-3 py-1.5 rounded-lg border border-emerald-200/80 dark:border-emerald-800">
+                <span>Risparmio totale rispetto al listino:</span>
+                <span id="cart-total-savings">€0,00</span>
+              </div>
+
+              <div class="flex items-center justify-between pt-1">
+                <div>
+                  <span class="text-sm font-bold text-[#0f172a] dark:text-white block">Totale da confermare</span>
+                  <span class="text-[11px] text-slate-500 dark:text-slate-400">Nessun addebito automatico</span>
+                </div>
+                <span id="cart-total-price" class="text-2xl font-extrabold text-[#059669] dark:text-emerald-400">€0,00</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Modulo "Completa la richiesta d'ordine" -->
+          <form id="order-form" class="p-5 space-y-4" novalidate>
+            <div>
+              <h3 class="text-sm font-extrabold text-[#0f172a] dark:text-white">Completa la richiesta d'ordine</h3>
+              <p class="text-xs text-slate-500 dark:text-slate-400 mt-0.5">Inserisci i tuoi recapiti per ricevere conferma immediata.</p>
+            </div>
+
+            <!-- Messaggio di validazione inline -->
+            <div id="form-feedback" class="hidden p-3 rounded-xl text-xs font-medium"></div>
+
+            <div>
+              <label for="customer-name" class="block text-xs font-semibold text-[#0f172a] dark:text-slate-200 mb-1">
+                Nome o Nickname <span class="text-rose-500">*</span>
+              </label>
+              <input type="text" id="customer-name" name="customerName" required placeholder="Es. Marco R."
+                class="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-[#0f172a] dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-[#f97316] transition-all" />
+            </div>
+
+            <div>
+              <label for="customer-contact" class="block text-xs font-semibold text-[#0f172a] dark:text-slate-200 mb-1">
+                Contatto WhatsApp o Telegram <span class="text-rose-500">*</span>
+              </label>
+              <input type="text" id="customer-contact" name="customerContact" required placeholder="Es. +39 333 1234567 oppure @username"
+                class="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-[#0f172a] dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-[#f97316] transition-all" />
+            </div>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div>
+                <label for="customer-email" class="block text-xs font-semibold text-[#0f172a] dark:text-slate-200 mb-1">
+                  Email cliente <span class="text-slate-400 font-normal">(opzionale)</span>
+                </label>
+                <input type="email" id="customer-email" name="customerEmail" placeholder="nome@email.it"
+                  class="w-full px-3.5 py-2.5 rounded-xl border border-stone-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-[#0f172a] dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-[#f97316] transition-all" />
+              </div>
+
+              <div>
+                <label for="payment-method" class="block text-xs font-semibold text-[#0f172a] dark:text-slate-200 mb-1">
+                  Metodo preferito <span class="text-rose-500">*</span>
+                </label>
+                <select id="payment-method" name="paymentMethod"
+                  class="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-slate-700 text-sm text-[#0f172a] dark:text-white bg-white dark:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-[#f97316] transition-all">
+                  <option value="PayPal">PayPal</option>
+                  <option value="Revolut / Carta">Revolut / Carta</option>
+                  <option value="Altro da concordare">Altro da concordare</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label for="order-notes" class="block text-xs font-semibold text-[#0f172a] dark:text-slate-200 mb-1">
+                Note o richieste specifiche <span class="text-slate-400 font-normal">(opzionale)</span>
+              </label>
+              <textarea id="order-notes" name="orderNotes" rows="2" placeholder="Es. Preferisco account nuovo, oppure domande sulla consegna..."
+                class="w-full px-3.5 py-2 rounded-xl border border-stone-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-sm text-[#0f172a] dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-[#f97316] transition-all"></textarea>
+              <!-- Avviso di sicurezza esplicito -->
+              <p class="mt-1.5 flex items-start gap-1.5 text-[11px] text-emerald-800 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/70 border border-emerald-200/80 dark:border-emerald-800 rounded-lg px-2.5 py-1.5">
+                <svg class="w-3.5 h-3.5 text-[#059669] dark:text-emerald-400 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                </svg>
+                <span>Sicurezza garantita: <strong>non inserire password</strong> in questo modulo. Eventuali dettagli tecnici si concordano in chat privata.</span>
+              </p>
+            </div>
+
+            <!-- Checkbox di presa visione tempi -->
+            <label class="flex items-start gap-2.5 cursor-pointer pt-1">
+              <input type="checkbox" id="terms-accept" required
+                class="mt-0.5 w-4 h-4 rounded border-stone-300 dark:border-slate-600 text-[#f97316] focus:ring-[#f97316]" />
+              <span class="text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+                Confermo di aver preso visione dei tempi di attivazione (1–20 minuti in fascia diurna) e che il pagamento verrà concordato dopo la conferma.
+              </span>
+            </label>
+
+            <button type="submit" id="submit-order-btn"
+              class="w-full py-3.5 px-4 rounded-xl bg-[#f97316] hover:bg-[#ea580c] active:bg-[#c2410c] text-white font-bold text-sm shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2 cursor-pointer">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.3" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+              </svg>
+              <span>Invia Richiesta d'Ordine</span>
+            </button>
+          </form>
+        </div>
+
+        <!-- =================================================================
+             PANNELLO BOT RIEPILOGO ORDINE (Appare dopo l'invio dell'ordine)
+             ================================================================= -->
+        <div id="bot-summary-card" class="hidden liquid-glass rounded-2xl border-2 border-[#10b981]/50 shadow-lg overflow-hidden">
+          <div class="px-5 py-3.5 bg-emerald-50 dark:bg-emerald-950/80 border-b border-emerald-200/80 dark:border-emerald-800 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+              <span class="w-2.5 h-2.5 rounded-full bg-[#059669] dark:bg-emerald-400"></span>
+              <span class="text-xs font-extrabold uppercase tracking-wider text-emerald-900 dark:text-emerald-200">Ordine Generato</span>
+            </div>
+            <span id="generated-order-code" class="text-xs font-mono font-bold px-2.5 py-0.5 rounded-md bg-white dark:bg-slate-900 text-[#0f172a] dark:text-white border border-emerald-300 dark:border-emerald-700">
+              #ORD-0000
+            </span>
+          </div>
+
+          <div class="p-5 space-y-4">
+            <!-- Stato invio automatico Webhook / Formspree -->
+            <div id="webhook-status-box" class="p-3 rounded-xl bg-[#fafaf9] dark:bg-slate-800/80 border border-stone-200 dark:border-slate-700 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">
+              <!-- Aggiornato dinamicamente al submit -->
+            </div>
+
+            <!-- Box testo formattato stile Bot -->
+            <div>
+              <div class="flex items-center justify-between mb-1.5">
+                <span class="text-xs font-bold text-[#0f172a] dark:text-white">Scheda ordine (Bot Riepilogo)</span>
+                <button type="button" id="copy-summary-btn"
+                  class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-stone-100 hover:bg-stone-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-[#0f172a] dark:text-slate-100 text-xs font-semibold transition-colors cursor-pointer">
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M15.666 3.888A2.25 2.25 0 0013.5 2.25h-3c-1.03 0-1.9.693-2.166 1.638m7.332 0c.055.194.084.4.084.612v0a.75.75 0 01-.75.75H9a.75.75 0 01-.75-.75v0c0-.212.03-.418.084-.612m7.332 0c.646.049 1.288.11 1.927.184 1.1.128 1.907 1.077 1.907 2.185V19.5a2.25 2.25 0 01-2.25 2.25H6.75A2.25 2.25 0 014.5 19.5V6.257c0-1.108.806-2.057 1.907-2.185a48.208 48.208 0 011.927-.184" />
+                  </svg>
+                  <span id="copy-btn-label">Copia riepilogo</span>
+                </button>
+              </div>
+              <pre id="bot-summary-text" class="p-3.5 rounded-xl bg-[#0f172a] dark:bg-slate-950 text-slate-100 text-xs font-mono whitespace-pre-wrap leading-relaxed overflow-x-auto border border-transparent dark:border-slate-800"></pre>
+            </div>
+
+            <!-- Pulsanti di invio immediato: WhatsApp & Email -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 pt-1">
+              <a id="whatsapp-send-link" href="#" target="_blank" rel="noopener noreferrer"
+                class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#059669] hover:bg-emerald-700 text-white text-xs font-bold transition-colors shadow-sm">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12.031 6.172c-3.181 0-5.767 2.586-5.768 5.766-.001 1.298.38 2.27 1.019 3.287l-.582 2.128 2.182-.573c.978.58 1.911.928 3.145.929 3.178 0 5.767-2.587 5.768-5.766.001-3.187-2.575-5.77-5.764-5.771zm3.392 8.244c-.144.405-.837.774-1.17.824-.299.045-.677.063-1.092-.069-.252-.08-.575-.187-.988-.365-1.739-.751-2.874-2.502-2.961-2.617-.087-.116-.708-.94-.708-1.793s.448-1.273.607-1.446c.159-.173.346-.217.462-.217l.332.006c.106.005.249-.04.39.298.144.347.491 1.2.534 1.287.043.087.072.188.014.304-.058.116-.087.188-.173.289l-.26.304c-.087.086-.177.18-.076.354.101.174.449.741.964 1.201.662.591 1.221.774 1.394.86s.274.072.376-.043c.101-.116.433-.506.549-.68.116-.173.231-.145.39-.087s1.011.477 1.184.564.289.13.332.202c.045.072.045.419-.1.824z"/>
+                </svg>
+                <span>Invia su WhatsApp</span>
+              </a>
+
+              <button type="button" id="email-send-link"
+                class="inline-flex items-center justify-center gap-2 px-4 py-3 rounded-xl bg-[#f97316] hover:bg-[#ea580c] text-white text-xs font-bold transition-colors shadow-sm cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                </svg>
+                <span>Invia via Email</span>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer Minimale -->
+  <footer class="liquid-glass border-t border-stone-200/80 dark:border-slate-800 mt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500 dark:text-slate-400">
+      <p><span id="store-name-footer" class="font-bold text-[#0f172a] dark:text-white">VelocePass</span> — Richieste e attivazioni digitali trasparenti.</p>
+      <p>Tutti i marchi citati appartengono ai rispettivi proprietari.</p>
+    </div>
+  </footer>
+
+  <!-- Toast notifica discreto per aggiunta al carrello / copia -->
+  <div id="toast-notification" class="fixed bottom-5 right-5 z-50 pointer-events-none opacity-0 translate-y-2 transition-all duration-200">
+    <div class="px-4 py-2.5 rounded-xl bg-[#0f172a] dark:bg-slate-800 text-white text-xs font-semibold shadow-lg flex items-center gap-2 border border-slate-700">
+      <span class="w-2 h-2 rounded-full bg-[#10b981]"></span>
+      <span id="toast-message">Prodotto aggiunto all'ordine</span>
+    </div>
+  </div>
+
+  <!-- =====================================================================
+       LOGICA APPLICATIVA & CONFIGURAZIONE STORE
+       ===================================================================== -->
+  <script>
+    /**
+     * 1. CONFIGURAZIONE DEL TUO NEGOZIO
+     * Personalizza qui i tuoi recapiti.
+     * - storeName: Nome visualizzato nell'intestazione e nei riepiloghi.
+     * - recipientEmail: La tua email dove ricevere gli ordini (eninaprayer849@gmail.com).
+     * - whatsappNumber: Il tuo numero WhatsApp in formato internazionale SENZA "+" o spazi (es. "393331234567").
+     * - webhookUrl: (Opzionale) Inserisci qui il tuo endpoint/webhook (es. Formspree o Make)
+     *   per ricevere l'email automaticamente in background senza dover cliccare "Invia via Email".
+     */
+    const STORE_CONFIG = {
+      storeName: "VelocePass",
+      recipientEmail: "eninaprayer849@gmail.com",
+      whatsappNumber: "393520523943",
+      webhookUrl: "https://formsubmit.co/ajax/eninaprayer849@gmail.com"
+    };
+
+    /**
+     * 2. CATALOGO PRODOTTI E VARIANTI
+     * Ogni prodotto contiene categoria, descrizione chiara, badge opzionali e opzioni selezionabili.
+     */
+    const CATALOG_PRODUCTS = [
+      {
+        id: "spotify-premium",
+        name: "Spotify Premium",
+        category: "Streaming & Combo",
+        description: "Ascolto senza pubblicità, download offline e qualità audio elevata. Attivazione rapida sul piano scelto.",
+        note: "Risparmio fino al 68% rispetto al listino ufficiale.",
+        options: [
+          { id: "sp-1m", label: "1 Mese", price: 6.99, listPrice: 12.99, badge: "" },
+          { id: "sp-3m", label: "3 Mesi", price: 14.99, listPrice: 38.97, badge: "Più scelto" },
+          { id: "sp-6m", label: "6 Mesi", price: 29.99, listPrice: 77.94, badge: "" },
+          { id: "sp-12m", label: "12 Mesi", price: 49.99, listPrice: 155.88, badge: "" }
+        ]
+      },
+      {
+        id: "netflix-4k",
+        name: "Netflix 4K UHD",
+        category: "Streaming & Combo",
+        description: "Qualità Ultra HD 4K su TV, smartphone, tablet e PC. Account privato dedicato con email originale inclusa.",
+        note: "Consegna rapida con credenziali dedicate.",
+        options: [
+          { id: "nf-1m", label: "1 Mese (4K UHD)", price: 9.99, listPrice: 17.99, badge: "Account privato" }
+        ]
+      },
+      {
+        id: "combo-spotify-netflix",
+        name: "Combo Spotify + Netflix 4K",
+        category: "Streaming & Combo",
+        description: "Pacchetto combinato da 1 mese con entrambi i servizi attivi: musica senza limiti + streaming in 4K UHD.",
+        note: "Invece di €16,98 presi singolarmente.",
+        options: [
+          { id: "cb-1m", label: "1 Mese Completo", price: 9.99, listPrice: 16.98, badge: "Super Combo" }
+        ]
+      },
+      {
+        id: "chatgpt-go",
+        name: "ChatGPT Go (Global)",
+        category: "AI & Utility",
+        description: "Abbonamento mensile per funzioni AI avanzate e produttività quotidiana. Attivazione diretta sull'account.",
+        note: "Modalità attivazione comunicata in chat prima del pagamento.",
+        options: [
+          { id: "ai-1m", label: "1 Mese Global", price: 9.99, listPrice: 14.99, badge: "Attivazione rapida" }
+        ]
+      },
+      {
+        id: "vbucks-fortnite",
+        name: "V-Bucks Fortnite",
+        category: "Gaming",
+        description: "Ricarica V-Bucks per pass battaglia, skin e bundle nello shop. Scegli il taglio desiderato dal menu.",
+        note: "Consegna rapida dopo conferma ordine.",
+        options: [
+          { id: "vb-800", label: "800 V-Bucks", price: 6.49, listPrice: 8.99, badge: "" },
+          { id: "vb-2400", label: "2.400 V-Bucks", price: 13.99, listPrice: 22.99, badge: "" },
+          { id: "vb-4500", label: "4.500 V-Bucks", price: 21.99, listPrice: 36.99, badge: "Più scelto" },
+          { id: "vb-9000", label: "9.000 V-Bucks", price: 39.99, listPrice: 73.98, badge: "" },
+          { id: "vb-12500", label: "12.500 V-Bucks", price: 49.99, listPrice: 89.99, badge: "" },
+          { id: "vb-25000", label: "25.000 V-Bucks", price: 94.99, listPrice: 179.98, badge: "" },
+          { id: "vb-50000", label: "50.000 V-Bucks", price: 179.99, listPrice: 359.96, badge: "" },
+          { id: "vb-62500", label: "62.500 V-Bucks", price: 219.99, listPrice: 449.95, badge: "" }
+        ]
+      },
+      {
+        id: "robux",
+        name: "Robux",
+        category: "Gaming",
+        description: "Ricarica Robux per gamepass, avatar e contenuti su Roblox. Disponibile dai tagli piccoli fino ai pacchetti grandi.",
+        note: "Istruzioni di accredito fornite prima del pagamento.",
+        options: [
+          { id: "rb-400", label: "400 Robux", price: 4.99, listPrice: 5.99, badge: "Popolare" },
+          { id: "rb-800", label: "800 Robux", price: 9.99, listPrice: 11.99, badge: "" },
+          { id: "rb-1700", label: "1.700 Robux", price: 20.99, listPrice: 23.99, badge: "" },
+          { id: "rb-2000", label: "2.000 Robux", price: 21.49, listPrice: 23.99, badge: "" },
+          { id: "rb-4500", label: "4.500 Robux", price: 49.99, listPrice: 59.99, badge: "" },
+          { id: "rb-10000", label: "10.000 Robux", price: 104.99, listPrice: 119.99, badge: "" },
+          { id: "rb-22500", label: "22.500 Robux", price: 199.99, listPrice: 239.99, badge: "" },
+          { id: "rb-45000", label: "45.000 Robux", price: 399.99, listPrice: 479.98, badge: "" }
+        ]
+      }
+    ];
+
+    // Stato dell'applicazione
+    let activeCategory = "Tutti";
+    let selectedOptionsMap = {}; // Memorizza la variante attualmente selezionata per ogni scheda prodotto
+    let cart = []; // Array di oggetti: { key, productId, productName, optionId, optionLabel, unitPrice, quantity }
+    let toastTimeout = null;
+
+    // Inizializza l'opzione predefinita di ciascun prodotto (scegliendo eventuali badge evidenziati)
+    CATALOG_PRODUCTS.forEach(prod => {
+      const preferred = prod.options.find(opt => opt.badge) || prod.options[0];
+      selectedOptionsMap[prod.id] = preferred.id;
+    });
+
+    /**
+     * Formatta un numero in Euro secondo lo standard italiano (es. €9,99)
+     */
+    function formatEuro(amount) {
+      return "€" + Number(amount || 0).toLocaleString("it-IT", {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+      });
+    }
+
+    /**
+     * Mostra una notifica toast discreta in basso a destra
+     */
+    function showToast(message) {
+      const toastEl = document.getElementById("toast-notification");
+      const msgEl = document.getElementById("toast-message");
+      if (!toastEl || !msgEl) return;
+
+      msgEl.textContent = message;
+      toastEl.classList.remove("opacity-0", "translate-y-2");
+      toastEl.classList.add("opacity-100", "translate-y-0");
+
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toastEl.classList.remove("opacity-100", "translate-y-0");
+        toastEl.classList.add("opacity-0", "translate-y-2");
+      }, 2400);
+    }
+
+    /**
+     * Calcola risparmio in Euro e in percentuale per una singola opzione
+     */
+    function getOptionSavings(opt) {
+      if (!opt.listPrice || opt.listPrice <= opt.price) {
+        return { savedAmount: 0, savedPct: 0 };
+      }
+      const savedAmount = opt.listPrice - opt.price;
+      const savedPct = Math.round((savedAmount / opt.listPrice) * 100);
+      return { savedAmount, savedPct };
+    }
+
+    /**
+     * Renderizza le schede prodotto filtrate per categoria
+     */
+    function renderProducts() {
+      const grid = document.getElementById("products-grid");
+      const filtered = activeCategory === "Tutti"
+        ? CATALOG_PRODUCTS
+        : CATALOG_PRODUCTS.filter(p => p.category === activeCategory);
+
+      grid.innerHTML = filtered.map(product => {
+        const currentOptionId = selectedOptionsMap[product.id];
+        const currentOption = product.options.find(o => o.id === currentOptionId) || product.options[0];
+        const hasMultipleOptions = product.options.length > 1;
+        const { savedAmount, savedPct } = getOptionSavings(currentOption);
+
+        // Costruisce il selettore variante (pillole se <= 4 opzioni, tendina <select> se > 4 opzioni)
+        let selectorHtml = "";
+        if (hasMultipleOptions && product.options.length <= 4) {
+          selectorHtml = `
+            <div class="mt-3">
+              <span class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">Seleziona durata</span>
+              <div class="grid grid-cols-2 gap-1.5">
+                ${product.options.map(opt => {
+                  const isSelected = opt.id === currentOption.id;
+                  return `
+                    <button type="button"
+                      onclick="selectProductOption('${product.id}', '${opt.id}')"
+                      class="px-2.5 py-2 rounded-xl border text-left transition-all cursor-pointer flex flex-col justify-between ${
+                        isSelected
+                          ? "border-[#f97316] bg-orange-50/70 dark:bg-orange-950/50 text-[#0f172a] dark:text-white ring-1 ring-[#f97316]/30"
+                          : "border-stone-200 dark:border-slate-700 bg-white dark:bg-slate-800/70 text-slate-700 dark:text-slate-300 hover:border-orange-300 dark:hover:border-orange-500/50"
+                      }">
+                      <div class="w-full flex items-center justify-between gap-1">
+                        <span class="text-xs font-bold truncate">${opt.label}</span>
+                        ${opt.badge ? `<span class="text-[10px] font-bold px-1.5 py-0.5 rounded bg-[#f97316] text-white shrink-0">${opt.badge}</span>` : ""}
+                      </div>
+                      <div class="w-full flex items-baseline gap-1.5 mt-0.5">
+                        <span class="text-xs font-extrabold text-[#059669] dark:text-emerald-400">${formatEuro(opt.price)}</span>
+                        ${opt.listPrice ? `<span class="text-[10px] text-slate-400 line-through">${formatEuro(opt.listPrice)}</span>` : ""}
+                      </div>
+                    </button>
+                  `;
+                }).join("")}
+              </div>
+            </div>
+          `;
+        } else if (hasMultipleOptions) {
+          selectorHtml = `
+            <div class="mt-3">
+              <label for="select-${product.id}" class="block text-[11px] font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                Scegli il taglio
+              </label>
+              <select id="select-${product.id}"
+                onchange="selectProductOption('${product.id}', this.value)"
+                class="w-full px-3 py-2.5 rounded-xl border border-stone-200 dark:border-slate-700 bg-[#fafaf9] dark:bg-slate-800 text-xs font-bold text-[#0f172a] dark:text-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-[#f97316]">
+                ${product.options.map(opt => `
+                  <option value="${opt.id}" ${opt.id === currentOption.id ? "selected" : ""}>
+                    ${opt.label} — ${formatEuro(opt.price)} ${opt.listPrice ? `(invece di ${formatEuro(opt.listPrice)})` : ""} ${opt.badge ? `• ${opt.badge}` : ""}
+                  </option>
+                `).join("")}
+              </select>
+            </div>
+          `;
+        } else {
+          selectorHtml = `
+            <div class="mt-3 pt-2.5 border-t border-stone-100 dark:border-slate-800 flex items-center justify-between">
+              <span class="text-xs font-semibold text-slate-600 dark:text-slate-300">${currentOption.label}</span>
+              ${currentOption.badge ? `<span class="text-[11px] font-bold px-2.5 py-0.5 rounded-full bg-orange-100 dark:bg-orange-950/80 text-[#ea580c] dark:text-orange-400">${currentOption.badge}</span>` : ""}
+            </div>
+          `;
+        }
+
+        return `
+          <article class="bg-white dark:bg-slate-900 rounded-2xl border border-stone-200/90 dark:border-slate-800 p-5 shadow-sm hover:shadow-md hover:border-orange-300/80 dark:hover:border-orange-500/40 transition-all flex flex-col justify-between">
+            <div>
+              <div class="flex items-start justify-between gap-2">
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[11px] font-semibold px-2.5 py-0.5 rounded-md bg-stone-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300">
+                    ${product.category}
+                  </span>
+                  ${savedPct > 0 ? `<span class="text-[11px] font-bold px-2 py-0.5 rounded-md bg-emerald-50 dark:bg-emerald-950/80 text-[#059669] dark:text-emerald-400 border border-emerald-200/80 dark:border-emerald-800">-${savedPct}%</span>` : ""}
+                </div>
+                <div class="text-right shrink-0">
+                  ${currentOption.listPrice ? `<span class="text-xs text-slate-400 line-through block leading-none mb-0.5">${formatEuro(currentOption.listPrice)}</span>` : ""}
+                  <span class="text-xl font-extrabold text-[#059669] dark:text-emerald-400 leading-none">${formatEuro(currentOption.price)}</span>
+                </div>
+              </div>
+
+              <h3 class="mt-2.5 text-base font-extrabold text-[#0f172a] dark:text-white">${product.name}</h3>
+              <p class="mt-1 text-xs text-slate-600 dark:text-slate-300 leading-relaxed">${product.description}</p>
+
+              ${selectorHtml}
+            </div>
+
+            <div class="mt-4 pt-3 border-t border-stone-100 dark:border-slate-800">
+              <div class="flex items-center justify-between text-[11px] mb-3">
+                <span class="text-slate-500 dark:text-slate-400 flex items-center gap-1">
+                  <svg class="w-3.5 h-3.5 text-[#059669] dark:text-emerald-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  </svg>
+                  <span class="truncate">${product.note}</span>
+                </span>
+                ${savedAmount > 0 ? `<span class="font-bold text-[#059669] dark:text-emerald-400 shrink-0 ml-2">Risparmi ${formatEuro(savedAmount)}</span>` : ""}
+              </div>
+
+              <button type="button"
+                onclick="addToCart('${product.id}')"
+                class="w-full py-2.5 px-4 rounded-xl bg-[#f97316] hover:bg-[#ea580c] active:bg-[#c2410c] text-white text-xs font-bold shadow-xs hover:shadow transition-all flex items-center justify-center gap-1.5 cursor-pointer">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.4" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                </svg>
+                <span>Aggiungi al carrello • ${formatEuro(currentOption.price)}</span>
+              </button>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    /**
+     * Aggiorna l'opzione selezionata per un prodotto e ridisegna la griglia
+     */
+    function selectProductOption(productId, optionId) {
+      selectedOptionsMap[productId] = optionId;
+      renderProducts();
+    }
+
+    /**
+     * Aggiunge rapidamente una variante specifica dalle card in evidenza
+     */
+    function quickAddOption(productId, optionId) {
+      selectedOptionsMap[productId] = optionId;
+      renderProducts();
+      addToCart(productId);
+    }
+
+    /**
+     * Aggiunge l'opzione selezionata del prodotto al carrello
+     */
+    function addToCart(productId) {
+      const product = CATALOG_PRODUCTS.find(p => p.id === productId);
+      if (!product) return;
+
+      const optionId = selectedOptionsMap[productId];
+      const option = product.options.find(o => o.id === optionId) || product.options[0];
+      const itemKey = `${product.id}::${option.id}`;
+
+      const existingItem = cart.find(item => item.key === itemKey);
+      if (existingItem) {
+        existingItem.quantity += 1;
+      } else {
+        cart.push({
+          key: itemKey,
+          productId: product.id,
+          productName: product.name,
+          optionId: option.id,
+          optionLabel: option.label,
+          unitPrice: option.price,
+          unitListPrice: option.listPrice || option.price,
+          quantity: 1
+        });
+      }
+
+      renderCart();
+      showToast(`Aggiunto: ${product.name} (${option.label})`);
+    }
+
+    /**
+     * Modifica la quantità di una riga nel carrello (+1 o -1)
+     */
+    function updateCartQuantity(itemKey, delta) {
+      const index = cart.findIndex(item => item.key === itemKey);
+      if (index === -1) return;
+
+      cart[index].quantity += delta;
+      if (cart[index].quantity <= 0) {
+        cart.splice(index, 1);
+      }
+      renderCart();
+    }
+
+    /**
+     * Cambia direttamente il taglio di un articolo già presente nel carrello
+     */
+    function changeCartItemOption(oldKey, productId, newOptionId) {
+      const oldIndex = cart.findIndex(item => item.key === oldKey);
+      if (oldIndex === -1) return;
+
+      const product = CATALOG_PRODUCTS.find(p => p.id === productId);
+      const newOption = product.options.find(o => o.id === newOptionId);
+      if (!product || !newOption) return;
+
+      const newKey = `${product.id}::${newOption.id}`;
+      const qty = cart[oldIndex].quantity;
+
+      // Rimuove la vecchia voce
+      cart.splice(oldIndex, 1);
+
+      // Se esiste già una riga con il nuovo taglio, somma le quantità
+      const duplicate = cart.find(item => item.key === newKey);
+      if (duplicate) {
+        duplicate.quantity += qty;
+      } else {
+        cart.push({
+          key: newKey,
+          productId: product.id,
+          productName: product.name,
+          optionId: newOption.id,
+          optionLabel: newOption.label,
+          unitPrice: newOption.price,
+          unitListPrice: newOption.listPrice || newOption.price,
+          quantity: qty
+        });
+      }
+
+      renderCart();
+    }
+
+    /**
+     * Aggiorna il riepilogo laterale, i contatori, il totale e il risparmio complessivo
+     */
+    function renderCart() {
+      const container = document.getElementById("cart-items-container");
+      const totalEl = document.getElementById("cart-total-price");
+      const savingsRowEl = document.getElementById("cart-savings-row");
+      const savingsValEl = document.getElementById("cart-total-savings");
+      const headerCountEl = document.getElementById("header-cart-count");
+      const clearBtn = document.getElementById("clear-cart-btn");
+
+      const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+      const totalAmount = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+      const totalListAmount = cart.reduce((sum, item) => sum + ((item.unitListPrice || item.unitPrice) * item.quantity), 0);
+      const totalSaved = Math.max(0, totalListAmount - totalAmount);
+
+      headerCountEl.textContent = totalItems;
+      totalEl.textContent = formatEuro(totalAmount);
+
+      if (totalSaved > 0.01) {
+        savingsRowEl.classList.remove("hidden");
+        savingsRowEl.classList.add("flex");
+        savingsValEl.textContent = formatEuro(totalSaved);
+      } else {
+        savingsRowEl.classList.add("hidden");
+        savingsRowEl.classList.remove("flex");
+      }
+
+      if (cart.length === 0) {
+        clearBtn.classList.add("hidden");
+        container.innerHTML = `
+          <div class="py-6 px-4 rounded-xl bg-[#fafaf9] dark:bg-slate-800/70 border border-dashed border-stone-200 dark:border-slate-700 text-center">
+            <p class="text-xs font-bold text-[#0f172a] dark:text-white">Nessun servizio selezionato</p>
+            <p class="text-[11px] text-slate-500 dark:text-slate-400 mt-1">Aggiungi uno o più prodotti dal catalogo per calcolare totale e risparmio.</p>
+          </div>
+        `;
+        return;
+      }
+
+      clearBtn.classList.remove("hidden");
+
+      container.innerHTML = cart.map(item => {
+        const product = CATALOG_PRODUCTS.find(p => p.id === item.productId);
+        const subtotal = item.unitPrice * item.quantity;
+
+        // Se il prodotto ha più tagli, permette di cambiarli anche direttamente dal carrello
+        const optionControl = product && product.options.length > 1
+          ? `
+            <select aria-label="Cambia taglio per ${item.productName}"
+              onchange="changeCartItemOption('${item.key}', '${item.productId}', this.value)"
+              class="mt-1 text-[11px] font-semibold text-slate-700 dark:text-slate-200 bg-white dark:bg-slate-900 border border-stone-200 dark:border-slate-700 rounded-lg px-2 py-1 focus:outline-none focus:border-[#f97316]">
+              ${product.options.map(opt => `
+                <option value="${opt.id}" ${opt.id === item.optionId ? "selected" : ""}>
+                  ${opt.label} (${formatEuro(opt.price)})
+                </option>
+              `).join("")}
+            </select>
+          `
+          : `<span class="text-xs text-slate-500 dark:text-slate-400 block">${item.optionLabel}</span>`;
+
+        return `
+          <div class="p-3 rounded-xl bg-[#fafaf9] dark:bg-slate-800/80 border border-stone-200/80 dark:border-slate-700 flex items-center justify-between gap-3">
+            <div class="min-w-0 flex-1">
+              <p class="text-xs font-extrabold text-[#0f172a] dark:text-white truncate">${item.productName}</p>
+              ${optionControl}
+            </div>
+
+            <div class="flex items-center gap-2 shrink-0">
+              <div class="inline-flex items-center rounded-lg border border-stone-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+                <button type="button" onclick="updateCartQuantity('${item.key}', -1)" aria-label="Riduci quantità"
+                  class="w-6 h-6 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-stone-100 dark:hover:bg-slate-800 rounded-l-lg text-xs font-bold cursor-pointer">
+                  −
+                </button>
+                <span class="px-2 text-xs font-bold text-[#0f172a] dark:text-white">${item.quantity}</span>
+                <button type="button" onclick="updateCartQuantity('${item.key}', 1)" aria-label="Aumenta quantità"
+                  class="w-6 h-6 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-stone-100 dark:hover:bg-slate-800 rounded-r-lg text-xs font-bold cursor-pointer">
+                  +
+                </button>
+              </div>
+              <span class="text-xs font-extrabold text-[#059669] dark:text-emerald-400 w-14 text-right">${formatEuro(subtotal)}</span>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    /**
+     * Genera un codice ordine univoco (es. #ORD-4829)
+     */
+    function generateOrderCode() {
+      const randomNum = Math.floor(1000 + Math.random() * 9000);
+      return `#ORD-${randomNum}`;
+    }
+
+    /**
+     * Formatta data e ora corrente in italiano
+     */
+    function getFormattedDateTime() {
+      const now = new Date();
+      return now.toLocaleString("it-IT", {
+        day: "2-digit",
+        month: "2-digit",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit"
+      });
+    }
+
+    /**
+     * Costruisce il testo strutturato stile "Bot Riepilogo Ordine"
+     */
+    function buildBotSummaryText(orderData) {
+      const lines = [
+        `📋 NUOVA RICHIESTA D'ORDINE — ${STORE_CONFIG.storeName}`,
+        `Codice Ordine: ${orderData.orderCode}`,
+        `Data e Ora: ${orderData.timestamp}`,
+        `----------------------------------------`,
+        `🛒 PRODOTTI RICHIESTI:`,
+        ...orderData.items.map(item =>
+          `• ${item.productName} (${item.optionLabel}) x${item.quantity} → ${formatEuro(item.unitPrice * item.quantity)}`
+        ),
+        `----------------------------------------`,
+        `💶 TOTALE STIMATO: ${formatEuro(orderData.total)}`,
+        `----------------------------------------`,
+        `👤 DATI CLIENTE:`,
+        `• Nome / Nickname: ${orderData.name}`,
+        `• Contatto: ${orderData.contact}`,
+        `• Email: ${orderData.email || "Non indicata"}`,
+        `• Pagamento preferito: ${orderData.paymentMethod}`,
+        `• Note: ${orderData.notes || "Nessuna nota aggiuntiva"}`,
+        `----------------------------------------`,
+        `Stato: In attesa di conferma e istruzioni attivazione.`
+      ];
+      return lines.join("\n");
+    }
+
+    /**
+     * Invia i dati anche a un eventuale Webhook / Formspree se configurato
+     */
+    async function dispatchToWebhookIfConfigured(orderData, summaryText) {
+      const statusBox = document.getElementById("webhook-status-box");
+
+      if (!STORE_CONFIG.webhookUrl || STORE_CONFIG.webhookUrl.trim() === "") {
+        statusBox.innerHTML = `
+          <strong class="text-slate-800 dark:text-white">Invio a ${STORE_CONFIG.recipientEmail} pronto:</strong> clicca su <strong>Invia via Email</strong> per aprire la bozza già compilata verso la tua casella, oppure su <strong>Invia su WhatsApp</strong>.
+          <span class="block text-[11px] text-slate-400 dark:text-slate-500 mt-1">(Per l'invio automatico diretto in background verso <code>${STORE_CONFIG.recipientEmail}</code> senza aprire il client di posta, collega un endpoint come Formspree in <code>webhookUrl</code>).</span>
+        `;
+        return;
+      }
+
+      statusBox.innerHTML = `<span class="text-indigo-600 font-medium">Invio automatico della scheda ordine a ${STORE_CONFIG.recipientEmail} in corso...</span>`;
+
+      try {
+        const response = await fetch(STORE_CONFIG.webhookUrl, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Accept": "application/json"
+          },
+          body: JSON.stringify({
+            _replyto: orderData.email || STORE_CONFIG.recipientEmail,
+            _subject: `Nuovo Ordine ${orderData.orderCode} - ${orderData.name} (${formatEuro(orderData.total)})`,
+            recipientEmail: STORE_CONFIG.recipientEmail,
+            orderCode: orderData.orderCode,
+            timestamp: orderData.timestamp,
+            customerName: orderData.name,
+            customerContact: orderData.contact,
+            customerEmail: orderData.email,
+            paymentMethod: orderData.paymentMethod,
+            notes: orderData.notes,
+            totalFormatted: formatEuro(orderData.total),
+            items: orderData.items,
+            formattedSummary: summaryText
+          })
+        });
+
+        if (response.ok) {
+          statusBox.innerHTML = `
+            <span class="text-emerald-700 dark:text-emerald-400 font-semibold">✓ Ordine trasmesso automaticamente a ${STORE_CONFIG.recipientEmail}!</span>
+            Puoi comunque inviare una copia rapida su WhatsApp qui sotto per accelerare la presa in carico.
+          `;
+        } else {
+          throw new Error("Risposta server non valida");
+        }
+      } catch (err) {
+        statusBox.innerHTML = `
+          <span class="text-amber-700 dark:text-amber-400 font-semibold">Invio automatico non riuscito al momento.</span>
+          Usa subito il pulsante <strong>Invia via Email</strong> (verso <code>${STORE_CONFIG.recipientEmail}</code>) o <strong>WhatsApp</strong> qui sotto.
+        `;
+      }
+    }
+
+    /**
+     * Gestione invio modulo d'ordine
+     */
+    document.getElementById("order-form").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const feedbackEl = document.getElementById("form-feedback");
+      feedbackEl.classList.add("hidden");
+
+      // 1. Verifica che il carrello non sia vuoto
+      if (cart.length === 0) {
+        feedbackEl.textContent = "Aggiungi almeno un servizio dal catalogo prima di inviare la richiesta d'ordine.";
+        feedbackEl.className = "p-3 rounded-xl text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200";
+        feedbackEl.classList.remove("hidden");
+        return;
+      }
+
+      // 2. Raccolta e validazione campi
+      const name = document.getElementById("customer-name").value.trim();
+      const contact = document.getElementById("customer-contact").value.trim();
+      const email = document.getElementById("customer-email").value.trim();
+      const paymentMethod = document.getElementById("payment-method").value;
+      const notes = document.getElementById("order-notes").value.trim();
+      const accepted = document.getElementById("terms-accept").checked;
+
+      if (!name || !contact) {
+        feedbackEl.textContent = "Inserisci il tuo Nome/Nickname e un contatto WhatsApp o Telegram per poterti rispondere.";
+        feedbackEl.className = "p-3 rounded-xl text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200";
+        feedbackEl.classList.remove("hidden");
+        return;
+      }
+
+      if (!accepted) {
+        feedbackEl.textContent = "Conferma la presa visione dei tempi di attivazione e delle modalità di pagamento prima di procedere.";
+        feedbackEl.className = "p-3 rounded-xl text-xs font-medium bg-rose-50 text-rose-700 border border-rose-200";
+        feedbackEl.classList.remove("hidden");
+        return;
+      }
+
+      const orderCode = generateOrderCode();
+      const timestamp = getFormattedDateTime();
+      const total = cart.reduce((sum, item) => sum + (item.unitPrice * item.quantity), 0);
+
+      const orderData = {
+        orderCode,
+        timestamp,
+        name,
+        contact,
+        email,
+        paymentMethod,
+        notes,
+        items: cart.map(item => ({ ...item })),
+        total
+      };
+
+      const summaryText = buildBotSummaryText(orderData);
+
+      document.getElementById("generated-order-code").textContent = orderCode;
+      document.getElementById("bot-summary-text").textContent = summaryText;
+
+      const whatsappText = `${summaryText}\n\nCiao! Vorrei confermare questo ordine (${orderCode}).`;
+      const whatsappHref = `https://wa.me/${STORE_CONFIG.whatsappNumber}?text=${encodeURIComponent(whatsappText)}`;
+      document.getElementById("whatsapp-send-link").setAttribute("href", whatsappHref);
+
+      // Link Email (mailto) precompilato gestito in modo sicuro anche in iframe
+      const mailSubject = `Nuovo Ordine ${orderData.orderCode} - ${orderData.name} (${formatEuro(orderData.total)})`;
+      const mailtoUrl = `mailto:${encodeURIComponent(STORE_CONFIG.recipientEmail)}?subject=${encodeURIComponent(mailSubject)}&body=${encodeURIComponent(summaryText)}`;
+      const emailBtn = document.getElementById("email-send-link");
+      emailBtn.dataset.mailtoUrl = mailtoUrl;
+
+      // Mostra il pannello riepilogo e scorre dolcemente verso di esso
+      const summaryCard = document.getElementById("bot-summary-card");
+      summaryCard.classList.remove("hidden");
+      summaryCard.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+      // Eventuale invio automatico a Webhook / Formspree
+      await dispatchToWebhookIfConfigured(orderData, summaryText);
+    });
+
+    /**
+     * Apertura email verso STORE_CONFIG.recipientEmail con fallback per anteprime/iframe
+     */
+    document.getElementById("email-send-link").addEventListener("click", function () {
+      const mailtoUrl = this.dataset.mailtoUrl;
+      const summaryText = document.getElementById("bot-summary-text").textContent || "";
+
+      if (!mailtoUrl) {
+        showToast("Genera prima un ordine dal modulo qui sopra");
+        return;
+      }
+
+      try {
+        const openedWin = window.open(mailtoUrl, "_self");
+        if (!openedWin) {
+          window.location.href = mailtoUrl;
+        }
+        showToast(`Apertura email verso ${STORE_CONFIG.recipientEmail}...`);
+      } catch (err) {
+        // Fallback: copia automaticamente il riepilogo negli appunti se il browser blocca mailto:
+        const tempTextArea = document.createElement("textarea");
+        tempTextArea.value = `A: ${STORE_CONFIG.recipientEmail}\n\n${summaryText}`;
+        tempTextArea.style.position = "fixed";
+        tempTextArea.style.opacity = "0";
+        document.body.appendChild(tempTextArea);
+        tempTextArea.select();
+        try {
+          document.execCommand("copy");
+        } catch (e) {}
+        document.body.removeChild(tempTextArea);
+        showToast(`Client email bloccato qui: riepilogo copiato per ${STORE_CONFIG.recipientEmail}`);
+      }
+    });
+
+    /**
+     * Pulsante "Copia riepilogo ordine" con fallback sicuro per iframe
+     */
+    document.getElementById("copy-summary-btn").addEventListener("click", function () {
+      const textToCopy = document.getElementById("bot-summary-text").textContent;
+      const labelEl = document.getElementById("copy-btn-label");
+
+      const tempTextArea = document.createElement("textarea");
+      tempTextArea.value = textToCopy;
+      tempTextArea.style.position = "fixed";
+      tempTextArea.style.opacity = "0";
+      document.body.appendChild(tempTextArea);
+      tempTextArea.select();
+
+      try {
+        document.execCommand("copy");
+        labelEl.textContent = "Copiato!";
+        showToast("Riepilogo ordine copiato negli appunti");
+        setTimeout(() => {
+          labelEl.textContent = "Copia riepilogo ordine";
+        }, 2000);
+      } catch (err) {
+        showToast("Seleziona il testo per copiarlo manualmente");
+      } finally {
+        document.body.removeChild(tempTextArea);
+      }
+    });
+
+    /**
+     * Gestione filtri categoria
+     */
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.addEventListener("click", function () {
+        activeCategory = this.getAttribute("data-category");
+
+        document.querySelectorAll(".filter-btn").forEach(b => {
+          b.className = "filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white text-slate-600 border border-stone-200 hover:border-orange-300 hover:text-[#ea580c] transition-colors";
+        });
+        this.className = "filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#0f172a] text-white transition-colors";
+
+        renderProducts();
+      });
+    });
+
+    /**
+     * Pulsante svuota carrello
+     */
+    document.getElementById("clear-cart-btn").addEventListener("click", function () {
+      cart = [];
+      renderCart();
+      showToast("Riepilogo ordine svuotato");
+    });
+
+    /**
+     * Aggiorna icona ed etichetta del pulsante tema chiaro/dark
+     */
+    function syncThemeToggleUI() {
+      const isDark = document.documentElement.classList.contains("dark");
+      const moonIcon = document.getElementById("theme-icon-moon");
+      const sunIcon = document.getElementById("theme-icon-sun");
+      const labelEl = document.getElementById("theme-toggle-label");
+
+      if (moonIcon) moonIcon.classList.toggle("hidden", isDark);
+      if (sunIcon) sunIcon.classList.toggle("hidden", !isDark);
+      if (labelEl) labelEl.textContent = isDark ? "Chiaro" : "Dark";
+    }
+
+    /**
+     * Gestione filtri categoria
+     */
+    document.querySelectorAll(".filter-btn").forEach(btn => {
+      btn.addEventListener("click", function () {
+        activeCategory = this.getAttribute("data-category");
+
+        document.querySelectorAll(".filter-btn").forEach(b => {
+          b.className = "filter-btn px-3.5 py-1.5 rounded-xl text-xs font-semibold bg-white dark:bg-slate-900 text-slate-600 dark:text-slate-300 border border-stone-200 dark:border-slate-700 hover:border-orange-300 hover:text-[#ea580c] dark:hover:text-orange-400 transition-colors cursor-pointer";
+        });
+        this.className = "filter-btn px-3.5 py-1.5 rounded-xl text-xs font-bold bg-[#0f172a] dark:bg-orange-500 text-white transition-colors cursor-pointer";
+
+        renderProducts();
+      });
+    });
+
+    /**
+     * Pulsante toggle tema dark/chiaro con salvataggio in localStorage
+     */
+    document.getElementById("theme-toggle-btn").addEventListener("click", function () {
+      const htmlEl = document.documentElement;
+      const nextIsDark = !htmlEl.classList.contains("dark");
+      htmlEl.classList.toggle("dark", nextIsDark);
+      try {
+        localStorage.setItem("velopass_theme", nextIsDark ? "dark" : "light");
+      } catch (e) {}
+      syncThemeToggleUI();
+      showToast(nextIsDark ? "Tema dark attivato" : "Tema chiaro attivato");
+    });
+
+    /**
+     * Pulsante svuota carrello
+     */
+    document.getElementById("clear-cart-btn").addEventListener("click", function () {
+      cart = [];
+      renderCart();
+      showToast("Riepilogo ordine svuotato");
+    });
+
+    /**
+     * Inizializzazione al caricamento della pagina
+     */
+    window.addEventListener("DOMContentLoaded", () => {
+      document.getElementById("store-name-header").textContent = STORE_CONFIG.storeName;
+      document.getElementById("store-name-footer").textContent = STORE_CONFIG.storeName;
+      syncThemeToggleUI();
+      renderProducts();
+      renderCart();
+    });
+  </script>
+</body>
+</html>
